@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { Button, Eyebrow, Money, Pill, Surface } from "@/components/ui";
@@ -18,7 +18,7 @@ type HistoryRow = {
   expiresAt: string | null;
 };
 
-export default function PaymentHistoryPage() {
+function HistoryPageContent() {
   const params = useSearchParams();
   const initialEmail = params.get("email") ?? "";
   const [email, setEmail] = useState(initialEmail);
@@ -120,7 +120,7 @@ export default function PaymentHistoryPage() {
                   Ref {r.reference.slice(-12)}
                 </div>
                 <div className="mt-3 flex items-center gap-2">
-                  <Pill tone={r.status === "USED" ? "accent" : "subtle"} mono>
+                  <Pill tone={r.status === "USED" ? "accent" : "default"} mono>
                     {r.status === "USED" ? "Checked in" : "Not checked in"}
                   </Pill>
                   <span className="text-[12px] text-[color:var(--color-ink-soft)]">
@@ -189,7 +189,7 @@ export default function PaymentHistoryPage() {
               )}
             </div>
             <div className="mt-4 flex items-center justify-between">
-              <Pill tone={active.status === "USED" ? "accent" : "subtle"} mono>
+              <Pill tone={active.status === "USED" ? "accent" : "default"} mono>
                 {active.status === "USED" ? "Checked in" : "Not checked in"}
               </Pill>
               <span className="text-[12px] text-[color:var(--color-ink-soft)]">
@@ -200,5 +200,19 @@ export default function PaymentHistoryPage() {
         </div>
       )}
     </div>
+  );
+}
+
+export default function PaymentHistoryPage() {
+  return (
+    <Suspense fallback={
+      <Surface padding="p-6" className="max-w-4xl mx-auto text-center">
+        <div className="text-[13px] text-[color:var(--color-ink-soft)]">
+          Loading history...
+        </div>
+      </Surface>
+    }>
+      <HistoryPageContent />
+    </Suspense>
   );
 }

@@ -9,7 +9,7 @@ export async function GET(req: Request) {
   }
 
   const png = await generateQrPngBuffer(token);
-  return new NextResponse(png, {
+  return new NextResponse(new Uint8Array(png), {
     status: 200,
     headers: {
       "content-type": "image/png",
