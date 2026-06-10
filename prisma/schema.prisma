@@ -1,0 +1,88 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Admin {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String
+  name         String
+  createdAt    DateTime @default(now())
+  createdById  String?
+
+  scans ScanLog[] @relation("ScansByAdmin")
+}
+
+enum BusStatus {
+  ACTIVE
+  FULL
+  DEPARTED
+}
+
+enum JourneyRoute {
+  YELWA_TO_GUBI
+  GUBI_TO_YELWA
+}
+
+model Bus {
+  id           String        @id @default(cuid())
+  label        String
+  journey      JourneyRoute
+  fareKobo     Int?
+  totalSeats   Int
+  status       BusStatus     @default(ACTIVE)
+  createdAt    DateTime      @default(now())
+  departedAt   DateTime?
+  reservations Reservation[]
+
+  @@index([journey, status, createdAt])
+}
+
+enum ReservationStatus {
+  PENDING_PAYMENT
+  PAID
+  USED
+  EXPIRED
+  CANCELED
+}
+
+model Reservation {
+  id               String            @id @default(cuid())
+  busId            String
+  bus              Bus               @relation(fields: [busId], references: [id])
+  studentName      String
+  studentEmail     String
+  amount           Int
+  paystackRef      String            @unique
+  qrToken          String?           @unique
+  status           ReservationStatus @default(PENDING_PAYMENT)
+  purchasedAt      DateTime?
+  expiresAt        DateTime?
+  scannedAt        DateTime?
+  scannedByAdminId String?
+  floatHistory     Json?
+  createdAt        DateTime          @default(now())
+
+  @@index([busId, status])
+  @@index([status, expiresAt])
+}
+
+model Setting {
+  key   String @id
+  value String
+}
+
+model ScanLog {
+  id            String   @id @default(cuid())
+  reservationId String?
+  qrTokenTried  String
+  result        String
+  adminId       String
+  admin         Admin    @relation("ScansByAdmin", fields: [adminId], references: [id])
+  scannedAt     DateTime @default(now())
+}
