@@ -3,7 +3,11 @@ import crypto from "crypto";
 const USE_STUB =
   process.env.USE_PAYSTACK_STUB === "true" || !process.env.PAYSTACK_SECRET_KEY;
 
-const APP_BASE_URL = process.env.APP_BASE_URL ?? "http://localhost:3000";
+const APP_BASE_URL =
+  process.env.APP_BASE_URL ??
+  (process.env.NEXT_PUBLIC_VERCEL_URL
+    ? `https://${process.env.NEXT_PUBLIC_VERCEL_URL}`
+    : "http://localhost:3000");
 
 export type PaystackInitResult = {
   reference: string;
