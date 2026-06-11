@@ -1,4 +1,4 @@
-import { Prisma, type PrismaClient, JourneyRoute } from "@prisma/client";
+import { Prisma, type PrismaClient } from "@prisma/client";
 
 type Tx = Omit<
   PrismaClient,
@@ -171,7 +171,7 @@ export async function activeReservationCountForBus(
 async function findNextAvailableBus(
   tx: Tx,
   afterCreatedAt: Date,
-  journey: JourneyRoute,
+  journey: string,
 ) {
   const candidates = await tx.bus.findMany({
     where: {
