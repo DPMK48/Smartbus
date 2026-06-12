@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 
@@ -104,6 +105,7 @@ export default function AdminShell({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [isOpen, setIsOpen] = useState(false);
 
   async function logout() {
     await fetch("/api/admin/logout", { method: "POST" });
@@ -114,16 +116,23 @@ export default function AdminShell({
   const initial = (adminName ?? "?").trim().charAt(0).toUpperCase() || "?";
 
   return (
-    <div className="flex flex-1 min-h-screen">
-      <aside className="w-[240px] bg-[color:var(--color-surface-dark)] text-[color:var(--color-surface)] flex flex-col shrink-0 sticky top-0 h-screen">
-        <Link
-          href="/admin/dashboard"
-          className="px-5 pt-5 pb-6 flex items-center gap-2.5"
+    <div className="flex flex-col md:flex-row min-h-screen w-full">
+      {/* Mobile Top Header */}
+      <header className="md:hidden flex items-center justify-between px-5 py-3 sticky top-0 z-30 backdrop-blur-xl bg-[color:var(--color-surface)]/85 border-b border-[color:var(--color-border)] text-[color:var(--color-ink)]">
+        <button
+          onClick={() => setIsOpen(true)}
+          className="p-1.5 -ml-1.5 rounded-lg hover:bg-[color:var(--color-surface-deep)] text-[color:var(--color-ink-soft)] hover:text-[color:var(--color-ink)] transition-colors"
+          aria-label="Open menu"
         >
-          <div className="w-9 h-9 rounded-xl bg-[color:var(--color-accent)] grid place-items-center text-white">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+        </button>
+        <div className="flex items-center gap-2">
+          <div className="w-8 h-8 rounded-lg bg-[color:var(--color-accent)] grid place-items-center text-white shrink-0">
             <svg
-              width="20"
-              height="20"
+              width="16"
+              height="16"
               viewBox="0 0 24 24"
               fill="none"
               stroke="currentColor"
@@ -136,13 +145,68 @@ export default function AdminShell({
               <circle cx="16" cy="20" r="1.5" />
             </svg>
           </div>
-          <div className="leading-tight">
-            <div className="h-display font-bold text-[15px]">ATBU Bus</div>
-            <div className="text-[10px] text-white/45 mt-0.5 uppercase tracking-wider">
-              Admin
+          <div className="leading-none text-left">
+            <div className="h-display font-bold text-[14px]">ATBU Bus</div>
+            <div className="text-[9px] text-[color:var(--color-ink-soft)] font-medium uppercase tracking-wider mt-0.5">
+              Admin Portal
             </div>
           </div>
-        </Link>
+        </div>
+      </header>
+
+      {/* Backdrop for mobile */}
+      {isOpen && (
+        <div
+          onClick={() => setIsOpen(false)}
+          className="fixed inset-0 bg-black/50 z-40 md:hidden transition-opacity"
+        />
+      )}
+
+      {/* Sidebar (drawer on mobile, sticky sidebar on desktop) */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-50 w-[240px] bg-[color:var(--color-surface-dark)] text-[color:var(--color-surface)] flex flex-col shrink-0 h-screen transition-transform duration-200 ease-in-out md:sticky md:top-0 md:translate-x-0 ${
+          isOpen ? "translate-x-0" : "-translate-x-full"
+        }`}
+      >
+        <div className="px-5 pt-5 pb-6 flex items-center justify-between gap-2.5">
+          <Link
+            href="/admin/dashboard"
+            className="flex items-center gap-2.5"
+            onClick={() => setIsOpen(false)}
+          >
+            <div className="w-9 h-9 rounded-xl bg-[color:var(--color-accent)] grid place-items-center text-white">
+              <svg
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                <path d="M5 17h14M5 7h14M3 11h18M5 7v10M19 7v10" />
+                <circle cx="8" cy="20" r="1.5" />
+                <circle cx="16" cy="20" r="1.5" />
+              </svg>
+            </div>
+            <div className="leading-tight">
+              <div className="h-display font-bold text-[15px]">ATBU Bus</div>
+              <div className="text-[10px] text-white/45 mt-0.5 uppercase tracking-wider">
+                Admin
+              </div>
+            </div>
+          </Link>
+          <button
+            onClick={() => setIsOpen(false)}
+            className="md:hidden p-1.5 rounded-lg hover:bg-white/10 text-white/70 hover:text-white transition-colors"
+            aria-label="Close menu"
+          >
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
 
         <div className="px-3 flex flex-col gap-0.5">
           {NAV.map((item) => {
@@ -152,6 +216,7 @@ export default function AdminShell({
               <Link
                 key={item.href}
                 href={item.href}
+                onClick={() => setIsOpen(false)}
                 className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-[14px] transition-colors ${
                   active
                     ? "bg-white/10 text-white font-medium"
@@ -188,8 +253,8 @@ export default function AdminShell({
         </div>
       </aside>
 
-      <main className="flex-1 overflow-auto bg-[color:var(--color-surface)]">
-        <div className="max-w-6xl mx-auto px-6 md:px-10 py-8 md:py-12">
+      <main className="flex-1 min-w-0 overflow-auto bg-[color:var(--color-surface)]">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 md:px-10 py-6 md:py-12">
           {children}
         </div>
       </main>

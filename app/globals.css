@@ -51,6 +51,7 @@
 
 html,
 body {
+  color-scheme: light;
   background: var(--color-surface);
   color: var(--color-ink);
   font-family: var(--font-body);
@@ -228,6 +229,10 @@ body {
   color: var(--color-ink);
   outline: none;
   transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+}
+select.input option {
+  background: var(--color-surface-raised);
+  color: var(--color-ink);
 }
 .input::placeholder {
   color: var(--color-muted);

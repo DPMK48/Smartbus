@@ -114,43 +114,45 @@ export default function AdminsClient({ initial }: { initial: Admin[] }) {
       )}
 
       <Surface padding="p-0" className="overflow-hidden">
-        <table className="data-table">
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Role</th>
-              <th>Created</th>
-            </tr>
-          </thead>
-          <tbody>
-            {initial.map((a) => (
-              <tr key={a.id}>
-                <td>
-                  <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-full bg-[color:var(--color-surface-deep)] grid place-items-center text-[12px] font-medium">
-                      {a.name.charAt(0).toUpperCase()}
-                    </div>
-                    <span className="font-medium">{a.name}</span>
-                  </div>
-                </td>
-                <td className="text-[12.5px] text-[color:var(--color-ink-soft)]">
-                  {a.email}
-                </td>
-                <td>
-                  {a.createdById ? (
-                    <Pill mono>Admin</Pill>
-                  ) : (
-                    <Pill tone="ink" mono>Super</Pill>
-                  )}
-                </td>
-                <td className="text-[12.5px] text-[color:var(--color-ink-soft)]">
-                  {new Date(a.createdAt).toLocaleString()}
-                </td>
+        <div className="overflow-x-auto w-full">
+          <table className="data-table min-w-[600px] sm:min-w-0">
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Role</th>
+                <th>Created</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {initial.map((a) => (
+                <tr key={a.id}>
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded-full bg-[color:var(--color-surface-deep)] grid place-items-center text-[12px] font-medium">
+                        {a.name.charAt(0).toUpperCase()}
+                      </div>
+                      <span className="font-medium">{a.name}</span>
+                    </div>
+                  </td>
+                  <td className="text-[12.5px] text-[color:var(--color-ink-soft)]">
+                    {a.email}
+                  </td>
+                  <td>
+                    {a.createdById ? (
+                      <Pill mono>Admin</Pill>
+                    ) : (
+                      <Pill tone="ink" mono>Super</Pill>
+                    )}
+                  </td>
+                  <td className="text-[12.5px] text-[color:var(--color-ink-soft)]">
+                    {new Date(a.createdAt).toLocaleString()}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Surface>
     </div>
   );

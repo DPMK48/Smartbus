@@ -143,30 +143,32 @@ export default async function Dashboard() {
           </Surface>
         ) : (
           <Surface variant="flat" padding="p-0" className="overflow-hidden">
-            <table className="data-table">
-              <thead>
-                <tr>
-                  <th>When</th>
-                  <th>Result</th>
-                  <th>Reservation</th>
-                  <th>Admin</th>
-                </tr>
-              </thead>
-              <tbody>
-                {s.recentScans.map((row) => (
-                  <tr key={row.id}>
-                    <td>{new Date(row.scannedAt).toLocaleString()}</td>
-                    <td>
-                      <ResultPill result={row.result} />
-                    </td>
-                    <td className="font-mono text-[11.5px] text-[color:var(--color-ink-soft)]">
-                      {row.reservationId ?? "—"}
-                    </td>
-                    <td>{row.admin?.name ?? "—"}</td>
+            <div className="overflow-x-auto w-full">
+              <table className="data-table min-w-[600px] sm:min-w-0">
+                <thead>
+                  <tr>
+                    <th>When</th>
+                    <th>Result</th>
+                    <th>Reservation</th>
+                    <th>Admin</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody>
+                  {s.recentScans.map((row) => (
+                    <tr key={row.id}>
+                      <td>{new Date(row.scannedAt).toLocaleString()}</td>
+                      <td>
+                        <ResultPill result={row.result} />
+                      </td>
+                      <td className="font-mono text-[11.5px] text-[color:var(--color-ink-soft)]">
+                        {row.reservationId ?? "—"}
+                      </td>
+                      <td>{row.admin?.name ?? "—"}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </Surface>
         )}
       </section>

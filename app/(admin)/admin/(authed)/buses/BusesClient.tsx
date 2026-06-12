@@ -170,7 +170,7 @@ export default function BusesClient({
         <Surface variant="default" padding="p-6" className="slide-up">
           <form
             onSubmit={addBus}
-            className="grid sm:grid-cols-[2fr_1fr_1fr_1fr_auto] gap-4 items-end"
+            className="grid grid-cols-1 lg:grid-cols-[2fr_1.5fr_1.2fr_1.2fr_auto] gap-4 items-end"
           >
             <Field label="Bus label">
               <input
@@ -223,7 +223,7 @@ export default function BusesClient({
               {busy ? "Adding…" : "Add to queue"}
             </Button>
             {err && (
-              <div className="sm:col-span-5 text-[14px] text-[color:var(--color-danger)] bg-[color:var(--color-danger)]/8 px-4 py-3 rounded-xl">
+              <div className="lg:col-span-5 text-[14px] text-[color:var(--color-danger)] bg-[color:var(--color-danger)]/8 px-4 py-3 rounded-xl">
                 {err}
               </div>
             )}
@@ -444,43 +444,45 @@ function BusCardAdmin({
         </div>
       ) : (
         <div className="border-t border-[color:var(--color-border)]">
-          <table className="data-table">
-            <thead>
-              <tr>
-                <th className="w-10"></th>
-                <th>Passenger</th>
-                <th>Email</th>
-                <th>Status</th>
-                <th>Reference</th>
-              </tr>
-            </thead>
-            <tbody>
-              {bus.reservations.map((r) => (
-                <tr key={r.id}>
-                  <td>
-                    {r.status === "PAID" && !r.scannedAt ? (
-                      <input
-                        type="checkbox"
-                        checked={selected.has(r.id)}
-                        onChange={() => toggle(r.id)}
-                        className="w-4 h-4 accent-[color:var(--color-ink)]"
-                      />
-                    ) : null}
-                  </td>
-                  <td className="font-medium">{r.studentName}</td>
-                  <td className="text-[12.5px] text-[color:var(--color-ink-soft)]">
-                    {r.studentEmail}
-                  </td>
-                  <td>
-                    <ReservationStatusPill status={r.status} />
-                  </td>
-                  <td className="font-mono text-[11px] text-[color:var(--color-muted)]">
-                    {r.paystackRef.slice(-12)}
-                  </td>
+          <div className="overflow-x-auto w-full">
+            <table className="data-table min-w-[600px] sm:min-w-0">
+              <thead>
+                <tr>
+                  <th className="w-10"></th>
+                  <th>Passenger</th>
+                  <th>Email</th>
+                  <th>Status</th>
+                  <th>Reference</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {bus.reservations.map((r) => (
+                  <tr key={r.id}>
+                    <td>
+                      {r.status === "PAID" && !r.scannedAt ? (
+                        <input
+                          type="checkbox"
+                          checked={selected.has(r.id)}
+                          onChange={() => toggle(r.id)}
+                          className="w-4 h-4 accent-[color:var(--color-ink)]"
+                        />
+                      ) : null}
+                    </td>
+                    <td className="font-medium">{r.studentName}</td>
+                    <td className="text-[12.5px] text-[color:var(--color-ink-soft)]">
+                      {r.studentEmail}
+                    </td>
+                    <td>
+                      <ReservationStatusPill status={r.status} />
+                    </td>
+                    <td className="font-mono text-[11px] text-[color:var(--color-muted)]">
+                      {r.paystackRef.slice(-12)}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
 
           {unscannedPaid.length > 0 && (
             <div className="bg-[color:var(--color-surface-deep)] px-5 md:px-6 py-4 flex flex-wrap items-center gap-3 justify-between">
